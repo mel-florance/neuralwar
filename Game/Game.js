@@ -110,7 +110,7 @@ Game.prototype.findFood = function(object)
     {
         if (typeof Engine.objects[i] !== 'undefined' && Engine.objects[i].instance.id != object.id)
         {
-            if (Engine.objects[i].instance.type == 'food')
+            if (Engine.objects[i].instance.type == 'food' && Engine.physics.gravity == 0)
             {
                 var d = Engine.distance(object, Engine.objects[i].instance);
 
