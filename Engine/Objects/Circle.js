@@ -41,13 +41,15 @@ Circle.prototype.draw = function(options)
     if(this.type == 'player')
     {
         var img = new Image()
-        img.src = 'https://cdn3.iconfinder.com/data/icons/unigrid-flat-human/90/011_076_soldier_helmet_human_avatar_retro-128.png';
+        img.src = '../Game/Assets/Img/soldier.svg';
         var that = this;
         img.onload = function()
         {
             Engine.ctx.save();
             Engine.ctx.beginPath();
-            Engine.ctx.arc(that.cx, that.cy, that.r, 0, 2 * Math.PI, false);
+            Engine.ctx.arc(that.cx, that.cy, that.r, 0, 2 * Math.PI, false)
+            Engine.ctx.fillStyle = options.color;
+            Engine.ctx.fill();
             Engine.ctx.closePath();
             Engine.ctx.clip();
             Engine.ctx.drawImage(img, that.cx - that.r, that.cy-that.r, that.r*2, that.r*2);
@@ -67,7 +69,7 @@ Circle.prototype.draw = function(options)
         Engine.ctx.fillStyle = 'white';
         Engine.ctx.textAlign = 'center';
         Engine.ctx.fillText(this.health, this.cx, this.cy + (this.r/2) + this.r);
-        Engine.ctx.restore()
+        Engine.ctx.restore();
 
 
        if(this.role == 'sniper')
@@ -87,16 +89,19 @@ Circle.prototype.draw = function(options)
                    for(var p in Engine.objects)
                    {
                        if(Engine.distance(this, Engine.objects[p].instance) >= max
-                       && this.team !== Engine.objects[p].instance.team)
+                       && this.team !== Engine.objects[p].instance.team
+                       && typeof this.team !== undefined
+                       && typeof Engine.objects[o].instance.team !== undefined)
                        {
-                           var vx = this.vx * Engine.objects[p].instance.vx;
-                           var vy = this.vy * Engine.objects[p].instance.vy;
+                           console.log('them',Engine.objects[p].instance.team);
+                           var vx = this.vx + Engine.objects[p].instance.vx;
+                           var vy = this.vy + Engine.objects[p].instance.vy;
 
                            var bullet = new Projectile(this.canvas, this.cx, this.cy, 3, this.sa, this.ea, false, vx, vy, 2, true, 0);
                            bullet.type = 'projectile';
                            bullet.r = 3;
 
-                           Engine.bindObject(bullet, {color: 'red', r: 3});
+                           Engine.bindObject(bullet, {color: options.color , r: 3});
                        }
                    }
                }
