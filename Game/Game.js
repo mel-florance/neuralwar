@@ -40,8 +40,8 @@ Game.prototype.attack = function(player, enemy)
 {
     if(player.type == 'player' && enemy.type == 'player')
     {
-        enemy.health  -= player.force + (Math.round(Math.random()) * 5 - 2);
-        player.health -= enemy.force + (Math.round(Math.random()) * 5 - 2);
+        enemy.health  -= Math.floor((player.force / 5.8) + (Math.round(Math.random()) * 0.5 - 0.1));
+        player.health -= Math.floor((enemy.force / 5.8) + (Math.round(Math.random()) * 0.5 - 0.1));
 
         if(enemy.r >= 1)
             enemy.r -= 1;
@@ -117,23 +117,27 @@ Game.prototype.findFood = function(object)
                 // hit sensor
                 if(d < (object.r + Engine.objects[i].instance.r) + object.sensor)
                 {
-                    var dx = Engine.objects[i].instance.cx - parseFloat(object.cx);
+                    var dx = Engine.objects[i].instance.cx - object.cx;
                     var dy = Engine.objects[i].instance.cy - object.cy;
 
-                    var incrementX = dx / 30 + .1;
-                    var incrementY = dy / 30 + .1;
+                    object.vx = incrementX = dx / 30 + .1;
+                    object.vy = incrementY = dy / 30 + .1;
 
-                    object.vx = incrementX;
-                    object.vy = incrementY;
+                    Engine.alpha += (Engine.delta / 10);
+                    if (Engine.alpha <= 0 || Engine.alpha >= 1) Engine.delta = -Engine.delta;
+                
+                    Engine.ctx.save();
+                    Engine.ctx.beginPath();
+                    Engine.ctx.arc(object.cx, object.cy, object.sensor, object.sa, object.ea, object.c);
+                    Engine.ctx.fillStyle = 'rgba(255,255,255, 0.03)';
+                    Engine.ctx.strokeStyle = 'rgba(255,255,255, 0.05)';
+                    Engine.ctx.strokeWidth = '0.1';
+                    Engine.ctx.globalAlpha = Engine.alpha;
+                    Engine.ctx.stroke();
+                    Engine.ctx.fill();
+                    Engine.ctx.closePath();
+                    Engine.ctx.restore();
 
-                    for(var s = 0; s < 3 ; s++)
-                    {
-                        Engine.ctx.beginPath();
-                        Engine.ctx.arc(object.cx, object.cy, object.sensor, object.sa, object.ea, object.c);
-                        Engine.ctx.fillStyle = 'rgba(255,255,255, 0.0'+s+')';
-                        Engine.ctx.fill();
-                        Engine.ctx.closePath();
-                    }
 
                     // Hit food
                     if(d < (object.r + Engine.objects[i].instance.r))
