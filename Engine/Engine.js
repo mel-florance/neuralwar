@@ -20,6 +20,8 @@ var Engine =
     tick      : 0,
     fps_count : 0,
     frame_cap : 5000,
+    delta     : 0.1,
+    alpha     : 0,
 
     game      : null,
     isRunning : false,
@@ -165,6 +167,7 @@ var Engine =
         this.ctx.globalAlpha = 0.7;
         this.ctx.fillStyle = 'rgba(0,0,0,1)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.globalCompositeOperation = 'source-over';
 
         for(object in this.objects)
             this.objects[object].instance.draw(this.objects[object].options);
