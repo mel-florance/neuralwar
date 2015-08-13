@@ -187,6 +187,19 @@ var Engine =
                         Engine.physics.checkCollisions(object, Engine.objects[i].instance);
                     }
                 }
+
+                if(typeof Engine.objects[i] !== 'undefined')
+                {
+                    if (Engine.objects[i].instance instanceof Box && (object instanceof Circle && !object instanceof Projectile))
+                    {
+                        if(Engine.physics.checkCircleRectCollisions(object, Engine.objects[i].instance))
+                        {
+                            object.freemove = false;
+                            object.vx *= -1;
+                            object.vy *= -1;
+                        }
+                    }
+                }
             }
         }
     }
