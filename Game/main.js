@@ -12,40 +12,27 @@ window.onload = function()
         {
             score       : 0,
             color       : 'rgba(240,50,0,1)',
-            players     : 5,
+            players     : 1,
             health      : 100,
             food_sensor : 100,
             radius      : 12,
-            startX      : 20 + Math.random() * (engine.canvas.width - 20 * 2),
-            startY      : 20 + Math.random() * (engine.canvas.height - 20 * 2),
-            velocityX   : Math.cos(Math.PI / 180 * Math.random() * 360) * Math.random() * 5 + 2,
-            velocityY   : Math.sin(Math.PI / 180 * Math.random() * 360) * Math.random() * 5 + 2
+            startX      : engine.canvas.width / 8,
+            startY      : engine.canvas.height / 2,
+            velocityX   : 0,
+            velocityY   : 0
         },
         blue:
         {
             score       : 0,
             color       : 'rgba(60,180,255,1)',
-            players     : 5,
+            players     : 1,
             health      : 100,
             food_sensor : 100,
             radius      : 12,
-            startX      : Math.floor(Math.random() * ((engine.canvas.width + (engine.canvas.width / 2)) - 50 + 1)) +50,
-            startY      : Math.floor(Math.random() * ((engine.canvas.height - 50) - 50 + 1)) + 5,
-            velocityX   : Math.cos(Math.PI / 180 * Math.random() * 360) * Math.random() * 5 + 2,
-            velocityY   : Math.sin(Math.PI / 180 * Math.random() * 360) * Math.random() * 5 + 2
-        },
-        yellow:
-        {
-            score       : 0,
-            color       : 'yellow',
-            players     : 5,
-            health      : 100,
-            food_sensor : 100,
-            radius      : 12,
-            startX      : Math.floor(Math.random() * ((engine.canvas.width + (engine.canvas.width / 2)) - 50 + 1)) +50,
-            startY      : Math.floor(Math.random() * ((engine.canvas.height - 50) - 50 + 1)) + 5,
-            velocityX   : Math.cos(Math.PI / 180 * Math.random() * 360) * Math.random() * 5 + 2,
-            velocityY   : Math.sin(Math.PI / 180 * Math.random() * 360) * Math.random() * 5 + 2
+            startX      : (engine.canvas.width / 2) + (engine.canvas.width / 3),
+            startY      : engine.canvas.height / 2,
+            velocityX   : 0,
+            velocityY   : 0
         }
     };
 
@@ -58,12 +45,11 @@ window.onload = function()
             for(var p = 0; p < teams[t].players; p++)
             {
                 var r  = teams[t].radius;
-                var x  = teams[t].startX * p;
-                var y  = teams[t].startY + p;
+                var x  = teams[t].startX ;
+                var y  = teams[t].startY;
                 var vx = teams[t].velocityX;
                 var vy = teams[t].velocityY;
                 var m  = r * r;
-
 
 
                 var player  = new Circle(
@@ -81,15 +67,17 @@ window.onload = function()
                     teams[t].food_sensor
                 );
 
-                if(p == 4) player.role = 'sniper';
+                if(p == 0) player.role = 'sniper';
                 else player.role = 'soldier';
 
+                player.searchFood = false;
+                player.speed = 6;
+                player.maxSpeed = 6;
                 player.type = 'player';
                 player.health = 100;
                 player.team = t;
                 player.attackSpeed = 1;
                 player.force = 3;
-
 
 
                 engine.bindOnce(player, {color: teams[t].color});
@@ -98,27 +86,39 @@ window.onload = function()
         }
     }
 
+
+    var maxFood = 50;
+    var i = 0;
     setInterval(function()
     {
-        var x =  Math.floor(Math.random() * ((engine.canvas.width - 50) - 50 + 1)) + 50;
-        var y =  Math.floor(Math.random() * ((engine.canvas.height - 50) - 50 + 1)) + 50;
-
-        var food      = new Circle(engine.canvas, x, y, 5, 0, (2 * Math.PI), false, 0, 0, 0, false);
-        food.type     = 'food';
-        food.freeMove = false;
-
-        var random = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
-        var value = random[Math.floor(Math.random()*random.length)];
-        var color = 'green';
-
-        if(value == 1)
+        i++;
+        if(i <= maxFood)
         {
-            color = 'white';
-            food.changeGravity = true;
-        }
+            var x =  Math.floor(Math.random() * ((engine.canvas.width - 50) - 50 + 1)) + 50;
+            var y =  Math.floor(Math.random() * ((engine.canvas.height - 50) - 50 + 1)) + 50;
 
-        engine.bindOnce(food, {color: color});
+            var food      = new Circle(engine.canvas, x, y, 5, 0, (2 * Math.PI), false, 0, 0, 0, false);
+            food.type     = 'food';
+            food.freeMove = false;
+
+            var random = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
+            var value = random[Math.floor(Math.random()*random.length)];
+            var color = 'green';
+
+            if(value == 1)
+            {
+                color = 'white';
+                food.changeGravity = true;
+            }
+
+            engine.bindOnce(food, {color: color});
+        }
     }, 500);
+
+    //
+    //
+    //var box = new Box(engine.canvas, 400, 500, 25, 25, 2, 2, 500, true);
+    //engine.bindObject(box, {color: 'red'});
 
     engine.render();
 };
