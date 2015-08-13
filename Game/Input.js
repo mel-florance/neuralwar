@@ -11,9 +11,19 @@ Input.prototype.listen = function(callback)
        callback({type: 'keyboard', event: e});
     };
 
-    window.document.click = function(e)
+    window.document.onclick = function(e)
     {
-        callback({type: 'mouse', event: e});
+        callback({type: 'mouse:click', event: e});
+    };
+
+    window.document.onmousedown = function(e)
+    {
+        callback({type: 'mouse:down', event: e});
+    };
+
+    window.document.onmouseup = function(e)
+    {
+        callback({type: 'mouse:up', event: e});
     };
 
     window.onresize = function()
