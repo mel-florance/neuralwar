@@ -64,16 +64,38 @@ Projectile.prototype.checkBordersCollisions = function()
 
     // floor
     if(this.cy > (this.canvas.height - this.r))
-       delete Engine.objects[this.id];
+    {
+        this.cy  = this.canvas.height - this.r;
+        this.vy *= -1;
 
+        this.vy *= .5;
+        this.vx *= .5;
+    }
+
+    // ceiling
+    if(this.cy < (this.r))
+    {
+        this.cy  = this.r + 2;
+        this.vy *= -1;
+        this.vy *= (1 - Engine.physics.collisionDamper);
+    }
 
     // right wall
     if(this.cx > (this.canvas.width - this.r))
-        delete Engine.objects[this.id];
+    {
+        this.cx  = this.canvas.width - this.r - 2;
+        this.vx *= -1;
+        this.vx *= (1 - Engine.physics.collisionDamper);
+    }
 
     // left wall
     if(this.cx < (this.r))
-        delete Engine.objects[this.id];
+    {
+        this.cx  = this.r + 2;
+        this.vx *= -1;
+        this.vx *= (1 - Engine.physics.collisionDamper);
+    }
+
 
     this.cx += this.vx;
     this.cy += this.vy;
